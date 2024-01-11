@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.CustomActionFilters;
 using NZWalks.API.Models.Domain;
@@ -15,7 +14,7 @@ namespace NZWalks.API.Controllers
         private readonly IWalkRepository repository;
         private readonly IMapper mapper;
 
-        public WalksController(IWalkRepository repository,IMapper mapper)
+        public WalksController(IWalkRepository repository, IMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;
@@ -25,7 +24,7 @@ namespace NZWalks.API.Controllers
         // POST:https://localhost:7210/api/walks
         [HttpPost]
         [ValidateModel]
-        public async Task<IActionResult> Create([FromBody]CreateWalkDTO createWalkDTO)
+        public async Task<IActionResult> Create([FromBody] CreateWalkDTO createWalkDTO)
         {
             var walkDomain = mapper.Map<Walk>(createWalkDTO);
             walkDomain = await repository.CreateAsync(walkDomain);
@@ -42,18 +41,20 @@ namespace NZWalks.API.Controllers
         {
             var walkDomain = await repository.GetByIdAsync(id);
 
-            if(walkDomain == null) { return NotFound(); }
+            if (walkDomain == null) { return NotFound(); }
 
             return Ok(mapper.Map<WalkDto>(walkDomain));
 
         }
 
         // Get All Walks
-        // GET:https://localhost:7210/api/walks
+        // GET:https://localhost:7210/api/walks?filterOn=Name&filterQuery=Track&sortBy
+        // GET:https://localhost:7210/api/walks?pageNumber=2&pageSize=10
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] string? sortBy, [FromQuery] bool? isAscending, int pageNumber = 1, int pageSize = 1000)
         {
-            var walksDomain = await repository.GetAllAsync();
+            var walksDomain = await repository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
+
             return Ok(mapper.Map<List<WalkDto>>(walksDomain));
         }
 
@@ -62,10 +63,10 @@ namespace NZWalks.API.Controllers
         [HttpPut]
         [Route("{id:guid}")]
         [ValidateModel]
-        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] UpdateWalkDTO updateWalkDTO)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateWalkDTO updateWalkDTO)
         {
-            var walkDomain = await repository.UpdateAsync(id,mapper.Map<Walk>(updateWalkDTO));
-            if (walkDomain==null)
+            var walkDomain = await repository.UpdateAsync(id, mapper.Map<Walk>(updateWalkDTO));
+            if (walkDomain == null)
             {
                 return NotFound();
             }
