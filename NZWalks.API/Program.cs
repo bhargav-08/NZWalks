@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NZWalks.API.Data;
@@ -46,6 +47,10 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
+// This will allows access to HttpContext.Request properties like https,localhost,port etc
+builder.Services.AddHttpContextAccessor();
+
+
 /*
  This is used to add DBContext. We pass DbContextOptions to AddDbContext and pass connectionString name
  */
@@ -58,6 +63,7 @@ builder.Services.AddDbContext<NZWalksAuthDbContext>(options => options.UseSqlSer
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
 
 // Inject AutoMapper Services 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
@@ -116,6 +122,12 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    RequestPath = "/images"
+});
 
 app.MapControllers();
 
