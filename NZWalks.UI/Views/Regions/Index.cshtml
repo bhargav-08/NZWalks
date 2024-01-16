@@ -1,0 +1,48 @@
+﻿@model IEnumerable<NZWalks.UI.Models.DTO.RegionDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>List of All Regions</h1>
+
+<p>
+    <a class="btn btn-success" asp-action="Create">Create New</a>
+</p>
+
+<div class="table-responsive">
+<table class="table table-hover table-sm align-middle">
+    <thead >
+        <tr>
+            <th >
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegionImageUrl)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegionImageUrl)
+            </td>
+            <td class="d-flex justify-content-around">
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id  }, new {@class="btn btn-secondary btn-sm m-2"} )
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>

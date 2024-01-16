@@ -1,0 +1,49 @@
+﻿@model NZWalks.UI.Models.DTO.RegionDto
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit Region</h1>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form  method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mt-3">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" readonly />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <label asp-for="Code" class="control-label"></label>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <label asp-for="RegionImageUrl" class="control-label"></label>
+                <input asp-for="RegionImageUrl" class="form-control" />
+                <span asp-validation-for="RegionImageUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3 d-flex justify-content-between">
+                <button type="submit" asp-action="Edit" asp-controller="Regions" class="btn btn-primary">Update</button>
+            
+                <button type="submit" asp-action="Delete" asp-controller="Regions" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-5">
+    <a class="btn btn-success" asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
